@@ -12,104 +12,170 @@ A lightweight web application that uses a local LLM (Large Language Model) to ex
 
 ## Installation
 
-1. Clone this repository:
+### Prerequisites
+
+- Python 3.8 or higher
+- Git
+
+### Setup
+
+1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/pdf-crm-extractor.git
-   cd pdf-crm-extractor
+   git clone https://github.com/yourusername/crm-opportunity-extractor.git
+   cd crm-opportunity-extractor
    ```
 
 2. Create a virtual environment:
    ```
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. Install dependencies:
+3. Activate the virtual environment:
+   - Windows:
+     ```
+     venv\Scripts\activate
+     ```
+   - macOS/Linux:
+     ```
+     source venv/bin/activate
+     ```
+
+4. Install dependencies:
    ```
    pip install -r requirements.txt
    ```
 
-4. Set up your API keys:
+5. Download the Mistral 7B model:
    ```
-   cp .env.example .env
+   mkdir -p models
+   # Download the model file to the models directory
+   # You can use wget, curl, or manually download
+   # Example:
+   # wget -O models/mistral-7b-instruct-v0.2.Q4_K_M.gguf https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/resolve/main/mistral-7b-instruct-v0.2.Q4_K_M.gguf
    ```
-   Then edit the `.env` file to add your API keys.
+
+   Note: If you don't have the model, the application will fall back to a rule-based extraction method.
 
 ## Usage
 
-### Extract data from a single PDF
-
-```bash
-python src/main.py extract path/to/your/document.pdf
-```
-
-Options:
-- `--output-format` or `-f`: Output format (`json` or `csv`), default is `json`
-- `--output-file` or `-o`: Save output to a file instead of printing to console
-
-Example:
-```bash
-python src/main.py extract sales_proposal.pdf --output-format csv --output-file opportunity.csv
-```
-
-### Batch process multiple PDFs
-
-```bash
-python src/main.py batch path/to/pdf/directory
-```
-
-Options:
-- `--output-format` or `-f`: Output format (`json` or `csv`), default is `json`
-- `--output-dir` or `-o`: Directory to save output files
-
-Example:
-```bash
-python src/main.py batch sales_documents/ --output-format json --output-dir extracted_data/
-```
-
-## AI Model Options
-
-The tool supports multiple AI model options:
-
-### Local LLM (Recommended)
-
-The tool can use a local LLM (Mistral 7B) for extraction without requiring an API key or internet connection:
-
-1. Run the setup script to install dependencies and download the model:
+1. Start the application:
    ```
-   python setup_local_llm.py
+   python simple_app.py
    ```
 
-2. The model will be downloaded to the `models` directory and automatically used by the extractor.
+2. Open your web browser and go to:
+   ```
+   http://127.0.0.1:5000/
+   ```
 
-### OpenAI API
+3. Paste text from your opportunity document into the text area.
 
-Alternatively, you can use OpenAI's GPT-3.5 Turbo model by setting your API key in the `.env` file:
+4. Click "Extract Data" to process the text.
+
+5. View the extracted CRM data in the results section.
+
+6. Optionally export the data as JSON or CSV.
+
+## Example Input
+
+The application works best with text that contains structured information about business opportunities. For example:
+
 ```
-OPENAI_API_KEY=your_api_key_here
+Zapytanie ofertowe nr: 15700829 Ważne do: 2025-04-12 23:59
+Zlecenia na wykonanie sklepu internetowego, Wyry
+Śląskie, powiat mikołowski, 43-175, Wyry
+Usługi dla firmy, biura >> Marketing internetowy >> Sklepy internetowe
+
+Zakres zlecenia: wykonanie sklepu
+Branża sklepu: PUCHARY
+Projekt graficzny: Klient nie ma projektu, ale wie czego oczekuje
+Orientacyjna liczba produktów: 501-1000
+Integracje: płatności, portale sprzedażowe/porównywarkI, firmy kurierskie, hurtownie, programy księgowe/magazynowe
+Inne potrzeby Klienta: migracja sklepu
+Termin realizacji usługi: możliwe od zaraz
+
+Kontakt do Jarosław Góralczyk
+e-mail: info@twojetrofeum.pl
+tel: +48602395561
+
+Firma: Trofeum
+powiat mikołowski
 ```
 
-### Other Options
+## AI Model Information
 
-You can configure different models by setting the appropriate environment variables in the `.env` file:
+The application uses a local LLM (Mistral 7B) for extraction without requiring an API key or internet connection. If the model is not available, it will fall back to a rule-based extraction method that uses regular expressions to identify common patterns in the text.
 
-- For Hugging Face: Set `HUGGINGFACE_API_TOKEN`
-- For custom local models: Set `LOCAL_MODEL_PATH` to point to your model file
+### Model Setup
 
-## CRM Data Schema
+1. Download the Mistral 7B model from Hugging Face:
+   ```
+   https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/resolve/main/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+   ```
 
-The tool extracts the following information:
+2. Place the model file in the `models` directory.
 
-- Company name
-- Contact name
-- Contact email and phone
-- Opportunity value and currency
+3. Install the ctransformers package:
+   ```
+   pip install ctransformers
+   ```
+
+## Extracted Fields
+
+The application extracts the following fields:
+
+- Company Name
+- Contact Name
+- Contact Email
+- Contact Phone
+- Location
+- Project Type
+- Industry
+- Product Count
+- Design Requirements
+- Integration Requirements
+- Other Requirements
+- Opportunity Value
 - Timeline
-- Products/services of interest
-- Opportunity stage
-- Probability of closing
-- Additional notes
+- Products/Services
+- Opportunity Stage
+- Probability
+- Notes
+
+## Customization
+
+### Adding New Extraction Patterns
+
+To add new extraction patterns, edit the `src/crm_extractor/extractor.py` file. Look for the pattern definitions in the `extract` method and add your own regular expressions.
+
+### Modifying the Data Model
+
+To add or modify the fields in the data model, edit the `CRMOpportunity` class in `src/crm_extractor/extractor.py`.
+
+## Troubleshooting
+
+### Model Loading Issues
+
+If you see an error like:
+```
+Error loading local model: Could not import `ctransformers` package. Please install it with `pip install ctransformers`
+```
+
+Install the required package:
+```
+pip install ctransformers
+```
+
+### Other Issues
+
+Check the logs in the `logs` directory for detailed error information.
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [Mistral AI](https://mistral.ai/) for the Mistral 7B model
+- [LangChain](https://www.langchain.com/) for the document processing framework
+- [Flask](https://flask.palletsprojects.com/) for the web framework
