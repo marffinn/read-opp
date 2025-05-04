@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<div class="page-header">
+  <h1>Extraction Results</h1>
+  <p class="lead">CRM opportunity data extracted from <strong>{{ filename }}</strong></p>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <h3 class="panel-title">CRM Opportunity Data</h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-striped">
+          <tbody>
+            <tr>
+              <th>Company Name</th>
+              <td>{{ results.company_name }}</td>
+            </tr>
+            <tr>
+              <th>Contact Name</th>
+              <td>{{ results.contact_name or 'N/A' }}</td>
+            </tr>
+            <tr>
+              <th>Contact Email</th>
+              <td>{{ results.contact_email or 'N/A' }}</td>
+            </tr>
+            <tr>
+              <th>Contact Phone</th>
+              <td>{{ results.contact_phone or 'N/A' }}</td>
+            </tr>
+            <tr>
+              <th>Opportunity Value</th>
+              <td>
+                {% if results.opportunity_value %}
+                  {{ results.opportunity_value }} {{ results.currency or '' }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <th>Timeline</th>
+              <td>{{ results.timeline or 'N/A' }}</td>
+            </tr>
+            <tr>
+              <th>Products/Services of Interest</th>
+              <td>
+                {% if results.product_interest %}
+                  <ul>
+                    {% for product in results.product_interest %}
+                      <li>{{ product }}</li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  N/A
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <th>Opportunity Stage</th>
+              <td>{{ results.opportunity_stage or 'N/A' }}</td>
+            </tr>
+            <tr>
+              <th>Probability</th>
+              <td>
+                {% if results.probability %}
+                  {{ results.probability }}%
+                {% else %}
+                  N/A
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <th>Notes</th>
+              <td>{{ results.notes or 'N/A' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Actions</h3>
+      </div>
+      <div class="panel-body">
+        <a href="{{ url_for('index') }}" class="btn btn-primary btn-block">Process Another PDF</a>
+        <a href="{{ url_for('batch') }}" class="btn btn-default btn-block">Batch Processing</a>
+        
+        <hr>
+        
+        <h4>Export Data</h4>
+        <div class="btn-group btn-block">
+          <button type="button" class="btn btn-success dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Export <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="#" onclick="exportJSON()">Export as JSON</a></li>
+            <li><a href="#" onclick="exportCSV()">Export as CSV</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function exportJSON() {
+    const data = {{ results|tojson }};
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '{{ filename }}'.replace('.pdf', '') + '_crm_data.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  
+  function exportCSV() {
+    const data = {{ results|tojson }};
+    let csv = 'Field,Value\n';
+    
+    for (const [key, value] of Object.entries(data)) {
+      if (key === 'product_interest' && Array.isArray(value)) {
+        csv += `${key},"${value.join(', ')}"\n`;
+      } else {
+        csv += `${key},"${value}"\n`;
+      }
+    }
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '{{ filename }}'.replace('.pdf', '') + '_crm_data.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+</script>
+{% endblock %}

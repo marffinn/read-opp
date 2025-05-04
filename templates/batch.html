@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<div class="page-header">
+  <h1>Batch Processing</h1>
+  <p class="lead">Process multiple PDF files at once</p>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Select PDF Files to Process</h3>
+      </div>
+      <div class="panel-body">
+        {% if pdf_files %}
+          <form action="{{ url_for('process_batch') }}" method="post">
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="select-all"> Select All
+                </label>
+              </div>
+              <hr>
+              {% for pdf_file in pdf_files %}
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="selected_files" value="{{ pdf_file }}"> {{ pdf_file }}
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Process Selected Files</button>
+          </form>
+        {% else %}
+          <div class="alert alert-warning">
+            No PDF files found in the uploads folder. Please upload some files first.
+          </div>
+          <a href="{{ url_for('index') }}" class="btn btn-primary">Upload PDF Files</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Upload More Files</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="file">Select PDF file</label>
+            <input type="file" id="file" name="file" class="form-control" accept=".pdf" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Upload</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('select-all').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('input[name="selected_files"]');
+    for (const checkbox of checkboxes) {
+      checkbox.checked = this.checked;
+    }
+  });
+</script>
+{% endblock %}

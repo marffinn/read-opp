@@ -1,0 +1,2 @@
+company_name,contact_name,contact_email,contact_phone,opportunity_value,currency,timeline,product_interest,opportunity_stage,probability,notes
+Example Company,John Doe,john.doe@example.com,,10000.0,USD,,,,,This is dummy data because no OpenAI API key was provided.

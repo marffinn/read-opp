@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<div class="page-header">
+  <h1>Batch Processing Results</h1>
+  <p class="lead">CRM opportunity data extracted from multiple PDF files</p>
+</div>
+
+{% if results %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            Processed {{ results|length }} file{% if results|length != 1 %}s{% endif %}
+            <div class="pull-right">
+              <button class="btn btn-xs btn-default" onclick="exportAllJSON()">Export All (JSON)</button>
+              <button class="btn btn-xs btn-default" onclick="exportAllCSV()">Export All (CSV)</button>
+            </div>
+          </h3>
+        </div>
+        <div class="panel-body">
+          <div class="accordion" id="resultsAccordion">
+            {% for result in results %}
+              <div class="panel panel-default">
+                <div class="panel-heading" id="heading{{ loop.index }}">
+                  <h4 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#resultsAccordion" href="#collapse{{ loop.index }}">
+                      {{ result.filename }} - {{ result.company_name }}
+                    </a>
+                    <div class="pull-right">
+                      <button class="btn btn-xs btn-primary" onclick="exportSingleJSON({{ loop.index0 }})">JSON</button>
+                      <button class="btn btn-xs btn-primary" onclick="exportSingleCSV({{ loop.index0 }})">CSV</button>
+                    </div>
+                  </h4>
+                </div>
+                <div id="collapse{{ loop.index }}" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <table class="table table-striped">
+                      <tbody>
+                        <tr>
+                          <th>Company Name</th>
+                          <td>{{ result.company_name }}</td>
+                        </tr>
+                        <tr>
+                          <th>Contact Name</th>
+                          <td>{{ result.contact_name or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                          <th>Contact Email</th>
+                          <td>{{ result.contact_email or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                          <th>Contact Phone</th>
+                          <td>{{ result.contact_phone or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                          <th>Opportunity Value</th>
+                          <td>
+                            {% if result.opportunity_value %}
+                              {{ result.opportunity_value }} {{ result.currency or '' }}
+                            {% else %}
+                              N/A
+                            {% endif %}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Timeline</th>
+                          <td>{{ result.timeline or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                          <th>Products/Services of Interest</th>
+                          <td>
+                            {% if result.product_interest %}
+                              <ul>
+                                {% for product in result.product_interest %}
+                                  <li>{{ product }}</li>
+                                {% endfor %}
+                              </ul>
+                            {% else %}
+                              N/A
+                            {% endif %}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Opportunity Stage</th>
+                          <td>{{ result.opportunity_stage or 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                          <th>Probability</th>
+                          <td>
+                            {% if result.probability %}
+                              {{ result.probability }}%
+                            {% else %}
+                              N/A
+                            {% endif %}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Notes</th>
+                          <td>{{ result.notes or 'N/A' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-12">
+      <a href="{{ url_for('batch') }}" class="btn btn-primary">Process More Files</a>
+      <a href="{{ url_for('index') }}" class="btn btn-default">Back to Home</a>
+    </div>
+  </div>
+{% else %}
+  <div class="alert alert-warning">
+    No results found. Please process some files first.
+  </div>
+  <a href="{{ url_for('batch') }}" class="btn btn-primary">Go to Batch Processing</a>
+{% endif %}
+
+<script>
+  function exportSingleJSON(index) {
+    const data = {{ results|tojson }}[index];
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = data.filename.replace('.pdf', '') + '_crm_data.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  
+  function exportSingleCSV(index) {
+    const data = {{ results|tojson }}[index];
+    let csv = 'Field,Value\n';
+    
+    for (const [key, value] of Object.entries(data)) {
+      if (key === 'product_interest' && Array.isArray(value)) {
+        csv += `${key},"${value.join(', ')}"\n`;
+      } else {
+        csv += `${key},"${value}"\n`;
+      }
+    }
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = data.filename.replace('.pdf', '') + '_crm_data.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  
+  function exportAllJSON() {
+    const data = {{ results|tojson }};
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'batch_crm_data.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  
+  function exportAllCSV() {
+    const data = {{ results|tojson }};
+    let csv = '';
+    
+    // Get all possible fields
+    const allFields = new Set();
+    data.forEach(item => {
+      Object.keys(item).forEach(key => allFields.add(key));
+    });
+    
+    // Create header row
+    const fields = Array.from(allFields);
+    csv += fields.join(',') + '\n';
+    
+    // Add data rows
+    data.forEach(item => {
+      const row = fields.map(field => {
+        const value = item[field];
+        if (field === 'product_interest' && Array.isArray(value)) {
+          return `"${value.join(', ')}"`;
+        } else if (value === null || value === undefined) {
+          return '';
+        } else {
+          return `"${value}"`;
+        }
+      });
+      csv += row.join(',') + '\n';
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'batch_crm_data.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+</script>
+{% endblock %}

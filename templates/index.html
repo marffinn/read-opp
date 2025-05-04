@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<div class="jumbotron">
+  <h1>PDF CRM Opportunity Extractor</h1>
+  <p>Upload a PDF document to extract CRM opportunity data using a local LLM.</p>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Upload PDF</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="file">Select PDF file</label>
+            <input type="file" id="file" name="file" class="form-control" accept=".pdf" required>
+            <p class="help-block">Maximum file size: 16MB</p>
+          </div>
+          <button type="submit" class="btn btn-primary">Upload & Extract</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">About</h3>
+      </div>
+      <div class="panel-body">
+        <p>This tool extracts structured CRM opportunity data from PDF documents using a local LLM (Mistral 7B).</p>
+        <p>The extracted data includes:</p>
+        <ul>
+          <li>Company name</li>
+          <li>Contact information</li>
+          <li>Opportunity value</li>
+          <li>Timeline</li>
+          <li>Products/services of interest</li>
+          <li>And more...</li>
+        </ul>
+        <p>For processing multiple files at once, use the <a href="{{ url_for('batch') }}">Batch Processing</a> feature.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

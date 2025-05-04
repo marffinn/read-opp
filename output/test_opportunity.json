@@ -1,0 +1,16 @@
+{
+  "company_name": "Acme Corporation",
+  "contact_name": "John Smith",
+  "contact_email": "john.smith@acmecorp.com",
+  "contact_phone": "(555) 123-4567",
+  "opportunity_value": 75000.0,
+  "currency": "USD",
+  "timeline": "Q3 2023",
+  "product_interest": [
+    "Cloud Storage",
+    "Data Analytics"
+  ],
+  "opportunity_stage": "Proposal",
+  "probability": 65.0,
+  "notes": "Acme Corporation is looking to upgrade their data storage and analytics capabilities. They are\ncurrently evaluating our solution against two competitors. The CTO has expressed particular interest\nin our real-time analytics features. A follow-up meeting is scheduled for next month."
+}
