@@ -249,7 +249,7 @@ HTML_TEMPLATE = """
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = '{{ filename }}'.replace('.pdf', '') + '_crm_data.json';
+                    a.download = '{{ filename }}' + '_crm_data.json';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
@@ -271,7 +271,7 @@ HTML_TEMPLATE = """
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = '{{ filename }}'.replace('.pdf', '') + '_crm_data.csv';
+                    a.download = '{{ filename }}' + '_crm_data.csv';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);

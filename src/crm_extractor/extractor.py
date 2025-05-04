@@ -6,8 +6,7 @@ This module extracts structured CRM opportunity data from document text using AI
 
 import os
 import sys
-from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import List, Optional
 from pydantic import BaseModel, Field
 from langchain_core.documents import Document
 from langchain.chains import LLMChain
@@ -50,12 +49,9 @@ class CRMOpportunity(BaseModel):
 class CRMDataExtractor:
     """Class for extracting CRM data from documents using AI."""
 
-    def __init__(self, model_name: str = "mistral-7b"):
+    def __init__(self):
         """
         Initialize the CRM data extractor.
-
-        Args:
-            model_name: Name of the AI model to use
         """
         # Check for local model first
         model_path = os.path.join("models", "mistral-7b-instruct-v0.2.Q4_K_M.gguf")
@@ -184,7 +180,7 @@ class CRMDataExtractor:
                         company_name = match.group(1).strip()
                         break
 
-                # Also look for specific Polish format in the PDF
+                # Also look for specific Polish format in the text
                 firma_match = re.search(r"Firma:\s*(.*?)(?:\n|$)", combined_text)
                 if firma_match:
                     company_name = firma_match.group(1).strip()
@@ -392,7 +388,7 @@ class CRMDataExtractor:
                         contact_email="john.doe@example.com",
                         opportunity_value=10000,
                         currency="USD",
-                        notes="This is dummy data because extraction failed. The PDF may not contain structured CRM data."
+                        notes="This is dummy data because extraction failed. The text may not contain structured CRM data."
                     )
 
                 return CRMOpportunity(
