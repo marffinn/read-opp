@@ -28,6 +28,7 @@ A lightweight web application that uses a local LLM (Large Language Model) to ex
    - Create a virtual environment
    - Install all dependencies
    - Create necessary directories
+   - Set up environment files
    - Offer to download the Mistral 7B model (optional but recommended)
    - Create a startup batch file
 
@@ -63,7 +64,14 @@ If you prefer to set up manually or are using a non-Windows system:
    pip install -r requirements.txt
    ```
 
-5. Download the Mistral 7B model (optional):
+5. Set up environment variables (optional):
+   ```
+   cp .env.example .env
+   ```
+
+   Edit the `.env` file if you want to use OpenAI or other API-based models.
+
+6. Download the Mistral 7B model (optional):
    ```
    mkdir -p models
    # Download the model file to the models directory
@@ -156,6 +164,28 @@ The application uses a local LLM (Mistral 7B) for extraction without requiring a
    ```
    pip install ctransformers
    ```
+
+### Using API-Based Models (Optional)
+
+By default, the application uses the local Mistral 7B model or falls back to rule-based extraction. If you prefer to use OpenAI or other API-based models:
+
+1. Copy the example environment file:
+   ```
+   cp .env.example .env
+   ```
+
+2. Edit the `.env` file and add your API keys:
+   ```
+   # OpenAI API Key
+   OPENAI_API_KEY=your_openai_api_key_here
+
+   # Hugging Face API Token
+   HUGGINGFACE_API_TOKEN=your_huggingface_token_here
+   ```
+
+3. The application will automatically detect and use the API-based models if the keys are present.
+
+> **Security Note**: Never commit your `.env` file with actual API keys to version control. The `.env` file is included in `.gitignore` to prevent accidental commits.
 
 ## Extracted Fields
 
