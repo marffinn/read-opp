@@ -15,9 +15,27 @@ A lightweight web application that uses a local LLM (Large Language Model) to ex
 ### Prerequisites
 
 - Python 3.8 or higher
-- Git
+- Git (optional, only needed if cloning the repository)
 
-### Setup
+### Easy Installation (Windows)
+
+1. Download or clone this repository to your local machine.
+
+2. Right-click on `install.ps1` and select "Run with PowerShell".
+   - If you get a security warning, you may need to run: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell first.
+
+3. The script will:
+   - Create a virtual environment
+   - Install all dependencies
+   - Create necessary directories
+   - Offer to download the Mistral 7B model (optional but recommended)
+   - Create a startup batch file
+
+4. Once installation is complete, you can start the application by double-clicking `start_app.bat`.
+
+### Manual Setup
+
+If you prefer to set up manually or are using a non-Windows system:
 
 1. Clone the repository:
    ```
@@ -45,7 +63,7 @@ A lightweight web application that uses a local LLM (Large Language Model) to ex
    pip install -r requirements.txt
    ```
 
-5. Download the Mistral 7B model:
+5. Download the Mistral 7B model (optional):
    ```
    mkdir -p models
    # Download the model file to the models directory
@@ -58,15 +76,12 @@ A lightweight web application that uses a local LLM (Large Language Model) to ex
 
 ## Usage
 
-1. Start the application:
-   ```
-   python simple_app.py
-   ```
+### Windows Quick Start
 
-2. Open your web browser and go to:
-   ```
-   http://127.0.0.1:5000/
-   ```
+1. Double-click `start_app.bat` to launch the application.
+
+2. Your default web browser should open automatically to http://127.0.0.1:5000/
+   - If it doesn't open, manually navigate to this address in your browser.
 
 3. Paste text from your opportunity document into the text area.
 
@@ -75,6 +90,28 @@ A lightweight web application that uses a local LLM (Large Language Model) to ex
 5. View the extracted CRM data in the results section.
 
 6. Optionally export the data as JSON or CSV.
+
+7. To stop the application, go back to the command window and press Ctrl+C.
+
+### Manual Start
+
+If you prefer to start the application manually:
+
+1. Activate the virtual environment:
+   - Windows: `venv\Scripts\activate`
+   - macOS/Linux: `source venv/bin/activate`
+
+2. Start the application:
+   ```
+   python simple_app.py
+   ```
+
+3. Open your web browser and go to:
+   ```
+   http://127.0.0.1:5000/
+   ```
+
+4. Follow steps 3-6 from the Quick Start section above.
 
 ## Example Input
 
