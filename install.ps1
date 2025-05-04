@@ -72,6 +72,25 @@ if (-not (Test-Path -Path "models")) {
 }
 Write-Host "✓ Directories created." -ForegroundColor Green
 
+# Set up environment files
+Write-Host "`nSetting up environment files..." -ForegroundColor Cyan
+if (-not (Test-Path -Path ".env") -and (Test-Path -Path ".env.example")) {
+    try {
+        Copy-Item -Path ".env.example" -Destination ".env"
+        Write-Host "✓ Created .env file from template." -ForegroundColor Green
+        Write-Host "  Note: Edit the .env file if you want to use API-based models." -ForegroundColor Yellow
+    }
+    catch {
+        Write-Host "✗ Failed to create .env file: $_" -ForegroundColor Red
+    }
+}
+elseif (Test-Path -Path ".env") {
+    Write-Host "  .env file already exists." -ForegroundColor Yellow
+}
+else {
+    Write-Host "✗ .env.example not found. Environment setup skipped." -ForegroundColor Red
+}
+
 # Check if model exists and offer to download
 $modelPath = "models\mistral-7b-instruct-v0.2.Q4_K_M.gguf"
 if (-not (Test-Path -Path $modelPath)) {
