@@ -126,25 +126,25 @@ If you prefer to start the application manually:
 The application works best with text that contains structured information about business opportunities. For example:
 
 ```
-Zapytanie ofertowe nr: 15700829 Ważne do: 2025-04-12 23:59
-Zlecenia na wykonanie sklepu internetowego, Wyry
-Śląskie, powiat mikołowski, 43-175, Wyry
+Zapytanie ofertowe nr: 12345678 Ważne do: 2025-06-30 23:59
+Zlecenia na wykonanie sklepu internetowego, Warszawa
+Mazowieckie, powiat warszawski, 00-001, Warszawa
 Usługi dla firmy, biura >> Marketing internetowy >> Sklepy internetowe
 
 Zakres zlecenia: wykonanie sklepu
-Branża sklepu: PUCHARY
+Branża sklepu: ELEKTRONIKA
 Projekt graficzny: Klient nie ma projektu, ale wie czego oczekuje
-Orientacyjna liczba produktów: 501-1000
-Integracje: płatności, portale sprzedażowe/porównywarkI, firmy kurierskie, hurtownie, programy księgowe/magazynowe
+Orientacyjna liczba produktów: 100-500
+Integracje: płatności, portale sprzedażowe, firmy kurierskie, programy księgowe
 Inne potrzeby Klienta: migracja sklepu
-Termin realizacji usługi: możliwe od zaraz
+Termin realizacji usługi: do końca kwartału
 
-Kontakt do Jarosław Góralczyk
-e-mail: info@twojetrofeum.pl
-tel: +48602395561
+Kontakt do Jan Kowalski
+e-mail: jan.kowalski@example.com
+tel: +48123456789
 
-Firma: Trofeum
-powiat mikołowski
+Firma: Example Electronics
+powiat warszawski
 ```
 
 ## AI Model Information
