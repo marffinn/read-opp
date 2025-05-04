@@ -7,6 +7,11 @@ __pycache__/
 venv/
 env/
 
+# Environment variables
+.env
+.env.*
+!.env.example
+
 # Application specific
 logs/
 extraction_results/
