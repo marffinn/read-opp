@@ -8,12 +8,18 @@ echo.
 echo Press any key to continue or Ctrl+C to cancel...
 pause > nul
 
-powershell -ExecutionPolicy Bypass -File complete_install.ps1
+:: Set execution policy and run the PowerShell script
+powershell -Command "& {Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process; .\complete_install.ps1}"
 
 if %ERRORLEVEL% NEQ 0 (
     echo.
     echo Installation encountered an error.
     echo Please check the output above for details.
+    echo.
+    echo You may need to run PowerShell as Administrator and execute:
+    echo Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+    echo.
+    echo Then try running this installer again.
     echo.
     pause
     exit /b %ERRORLEVEL%
