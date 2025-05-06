@@ -17,22 +17,26 @@ A lightweight web application that uses a local LLM (Large Language Model) to ex
 - Python 3.8 or higher
 - Git (optional, only needed if cloning the repository)
 
-### Easy Installation (Windows)
+### One-Click Installation (Windows)
 
 1. Download or clone this repository to your local machine.
 
-2. Right-click on `install.ps1` and select "Run with PowerShell".
-   - If you get a security warning, you may need to run: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell first.
+2. Double-click on `INSTALL.bat` to run the comprehensive installation script.
+   - This will automatically run PowerShell with the correct permissions
+   - No manual PowerShell commands needed
 
-3. The script will:
+3. The installation script will:
    - Create a virtual environment
    - Install all dependencies
    - Create necessary directories
    - Set up environment files
-   - Offer to download the Mistral 7B model (optional but recommended)
+   - Download the Mistral 7B model (about 4.1GB)
+   - Install model support libraries
    - Create a startup batch file
 
 4. Once installation is complete, you can start the application by double-clicking `start_app.bat`.
+
+> **Note**: The Mistral model is large (about 4.1GB) and may take some time to download depending on your internet connection. The installation will continue in the background if you don't want to wait.
 
 ### Manual Setup
 
